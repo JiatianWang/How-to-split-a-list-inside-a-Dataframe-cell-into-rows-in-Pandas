@@ -1,0 +1,17 @@
+import pandas as pd
+import numpy as np
+import ast
+
+
+df = pd.read_csv('ted_main.csv')
+
+
+df['tags'] = df['tags'].apply(lambda x: ast.literal_eval(x))
+
+tags = df['tags'].apply(pd.Series).stack().reset_index(level =1, drop = True)
+
+tags.name = 'theme'
+
+theme_df = df.drop('tags', axis = 1).merge(tags,right_index = True, left_index = True)
+
+th = theme_df[['comments','name','theme']].head(10)
